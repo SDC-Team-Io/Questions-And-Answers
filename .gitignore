@@ -1,0 +1,6 @@
+node_modules
+.env
+mongodb.js
+sqlSchema.sql
+etl.js
+csv
