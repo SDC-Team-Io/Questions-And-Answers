@@ -52,7 +52,11 @@ router.get('/qa/questions', async (req, res) => {
   FETCH FIRST $3 ROWS ONLY;`;
     const client = await pool.connect();
     const result = await client.query(query, values);
-    res.send(result.rows);
+    var formatted = {
+      product_id: req.query.product_id,
+      results: result.rows
+    }
+    res.send(formatted);
     client.release();
   } catch (err) {
     console.error(err);
