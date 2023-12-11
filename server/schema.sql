@@ -38,3 +38,11 @@ CREATE TABLE photos (
   FOREIGN KEY (answer_id) REFERENCES answers (id) ON DELETE CASCADE
 );
 
+CREATE INDEX questions_index
+ON questions(product_id, reported);
+
+CREATE INDEX answers_index
+ON answers(question_id, reported);
+
+CREATE INDEX photos_index
+ON photos(answer_id)

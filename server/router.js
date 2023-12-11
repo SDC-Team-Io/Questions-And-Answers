@@ -42,11 +42,11 @@ router.get('/qa/questions', async (req, res) => {
         ORDER BY a.helpful DESC
         ), '[]'::json)
         FROM answers a
-        WHERE a.reported = false AND q.id = a.question_id
+        WHERE q.id = a.question_id AND a.reported = false
 
       ) AS answers
   FROM questions q
-  WHERE q.reported = false AND q.product_id=$1
+  WHERE q.product_id=$1 AND q.reported = false
   ORDER BY q.helpful DESC
   OFFSET $2 ROWS
   FETCH FIRST $3 ROWS ONLY;`;
