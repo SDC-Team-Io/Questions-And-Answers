@@ -60,7 +60,7 @@ router.get('/qa/questions', async (req, res) => {
   }
 });
 
-//not used by current frontend but exists in the backend.
+//not used by current frontend but exists in the backend so will implement after optimizations have been made as its a very low priority.
 router.get('/qa/questions/:question_id/answers', async (req, res) => {
   //get all of the answers for a particular question
   try {
