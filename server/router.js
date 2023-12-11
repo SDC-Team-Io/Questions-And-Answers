@@ -28,7 +28,7 @@ router.get('/qa/questions', async (req, res) => {
       q.asker_name,
       q.helpful AS question_helpfulness,
       q.reported,
-      (SELECT json_agg(
+      (SELECT COALESCE(json_agg(
         json_build_object(
           'id', a.id,
           'body', a.body,
@@ -40,7 +40,7 @@ router.get('/qa/questions', async (req, res) => {
             FROM photos p WHERE p.answer_id = a.id)
         )
         ORDER BY a.helpful DESC
-        )
+        ), '[]'::json)
         FROM answers a
         WHERE a.reported = false AND q.id = a.question_id
 
