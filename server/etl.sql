@@ -29,5 +29,3 @@ DROP COLUMN date_written;
 
 ALTER TABLE answers
 DROP COLUMN date_written;
-
---need to add in any indexed items here (so far: product id) gonna add after first round of query tests.
