@@ -35,7 +35,9 @@ router.get('/qa/questions', async (req, res) => {
           'date', a.date,
           'answerer_name', a.answerer_name,
           'helpfulness', a.helpful,
-          'photos', (SELECT array_agg(p.url) FROM photos p WHERE p.answer_id = a.id)
+          'photos',
+            (SELECT COALESCE(array_agg(p.url), ARRAY[]::varchar[])
+            FROM photos p WHERE p.answer_id = a.id)
         )
         ORDER BY a.helpful DESC
         )
@@ -166,6 +168,8 @@ module.exports = router;
 //$2= req.params.page
 //$3= req.params.count
 // const values = [req.params.product_id, req.params.page * req.params.count, req.params.count];
+
+//just maintaining the first query I set up for when i undergo optimizations
 
 // const query =
 // SELECT
