@@ -12,13 +12,13 @@ const pool = new Pool({
 });
 
 router.get('/qa/questions', async (req, res) => {
+  //get all of the questions/answers/answerPhotos for a particular product
   try {
-    //need to write out query strings and format the data approprately
     //req.query.product_id
-    //req.query.page === 1
-    //req.query.count === 50
-    //for the get need to get all data where the
-    //make sure to set default values for count and page
+    //req.query.page === 1 used in all Legacy frontend requests
+    //req.query.count === 50 used in all Legacy frontend requests
+    !req.query.page ? req.query.page = 0 : req.query.page;
+    !req.query.count ? req.query.count = 50 : req.query.count;
     const values = [req.query.product_id, req.query.page * req.query.count, req.params.count];
     const query =
     `SELECT
@@ -197,8 +197,3 @@ module.exports = router;
 // ORDER BY q.helpful DESC
 // OFFSET $2 ROWS
 // FETCH FIRST $3 ROWS ONLY;
-
-
-// jsonb_build_object(
-
-// )
