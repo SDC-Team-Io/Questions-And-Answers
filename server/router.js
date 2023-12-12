@@ -12,14 +12,15 @@ const pool = new Pool({
 });
 
 router.get('/qa/questions', async (req, res) => {
+  //get all of the questions/answers/answerPhotos for a particular product
   try {
-    //need to write out query strings and format the data approprately
     //req.query.product_id
-    //req.query.page === 1
-    //req.query.count === 50
-    //for the get need to get all data where the
-    //make sure to set default values for count and page
-    const values = [req.query.product_id, req.query.page * req.query.count, req.params.count];
+    //req.query.page === 1 used in all Legacy frontend requests
+    //req.query.count === 50 used in all Legacy frontend requests
+    !req.query.page ? req.query.page = 0 : req.query.page;
+    req.query.page > 0 ? req.query.page-- : req.query.page;
+    !req.query.count ? req.query.count = 50 : req.query.count;
+    const values = [req.query.product_id, req.query.page * req.query.count, req.query.count];
     const query =
     `SELECT
       q.id AS question_id,
@@ -68,16 +69,39 @@ router.get('/qa/questions', async (req, res) => {
 router.get('/qa/questions/:question_id/answers', async (req, res) => {
   //get all of the answers for a particular question
   try {
-    //need to write out query strings and format the data approprately
     //req.query.question_id
     //req.query.page === 1
     //req.query.count === 50
     //for this get need to get the sorted answers list
     //then need to get the photos array for each one and put it in the appropriate spot.
-    var query = ``;
+    !req.query.page ? req.query.page = 0 : req.query.page;
+    req.query.page > 0 ? req.query.page-- : req.query.page;
+    !req.query.count ? req.query.count = 2 : req.query.count; //default of 2
+    const values = [req.params.question_id, req.query.page * req.query.count, req.query.count];
+    const query =
+    `SELECT
+      a.id,
+      a.body,
+      a.date,
+      a.answerer_name,
+      a.helpful AS helpfulness,
+      (SELECT COALESCE(json_agg(json_build_object('id', p.id, 'url', p.url)), '[]'::json)
+              FROM photos p WHERE p.answer_id = a.id) AS photos
+    FROM answers a
+    WHERE a.question_id = $1 AND a.reported = false
+    ORDER BY a.helpful DESC
+    OFFSET $2 ROWS
+    FETCH FIRST $3 ROWS ONLY;`
+    ;
     const client = await pool.connect();
-    const result = await client.query(query);
-    res.send(result.rows);
+    const result = await client.query(query, values);
+    const formatted = {
+      question_id: req.params.question_id,
+      page: req.query.page,
+      count: req.query.count,
+      results: result.rows
+    };
+    res.send(formatted);
     client.release();
   } catch (err) {
     console.error(err);
@@ -197,8 +221,3 @@ module.exports = router;
 // ORDER BY q.helpful DESC
 // OFFSET $2 ROWS
 // FETCH FIRST $3 ROWS ONLY;
-
-
-// jsonb_build_object(
-
-// )
