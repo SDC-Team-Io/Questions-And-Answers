@@ -18,6 +18,7 @@ router.get('/qa/questions', async (req, res) => {
     //req.query.page === 1 used in all Legacy frontend requests
     //req.query.count === 50 used in all Legacy frontend requests
     !req.query.page ? req.query.page = 0 : req.query.page;
+    req.query.page > 0 : req.query.page-- : req.query.page;
     !req.query.count ? req.query.count = 50 : req.query.count;
     const values = [req.query.product_id, req.query.page * req.query.count, req.params.count];
     const query =
