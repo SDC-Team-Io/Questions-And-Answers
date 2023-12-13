@@ -26,4 +26,4 @@ const cacheMiddleware = (cacheSeconds) => {
   }
 
 }
-module.exports = cacheMiddleware
+module.exports = cacheMiddleware;
