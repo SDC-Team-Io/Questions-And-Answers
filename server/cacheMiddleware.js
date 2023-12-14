@@ -10,6 +10,7 @@ const cacheMiddleware = (cacheSeconds) => {
       if (cachedData !== null) {
         //send back the cached data if it was there
         //was considering refreshing the cache time but popular requests getting refreshed once every 10-15 seconds is negligible... and without an absolute cache clear could lead to too much memory usage for the cache...
+        res.setHeader('Content-Type', 'application/json');
         res.send(cachedData);
       } else {
         //save the original res.send and then override the function to add the uncached res to the cache for cacheSeconds.
@@ -20,9 +21,11 @@ const cacheMiddleware = (cacheSeconds) => {
           //send the data back using the original send method
           oldSend(body);
         }
+        next();
       }
+    } else {
+      next();
     }
-    next();
   }
 
 }
