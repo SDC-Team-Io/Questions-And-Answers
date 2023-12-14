@@ -4,7 +4,7 @@ const cacheMiddleware = (cacheSeconds) => {
   return (req, res, next) => {
     if (req.method === 'GET') {
       //set the key to be used by the cache
-      const key = '' + req.originalUrl;
+      const key = req.originalUrl;
       //get the cached data (will be undefined if its not there)
       const cachedData = cache.get(key);
       if (cachedData !== null) {
